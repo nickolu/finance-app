@@ -28,10 +28,10 @@ export function App() {
   );
 }
 
-function CategorySelect(props: { categories: Category[]; value: number | null; onChange: (id: number | null) => void }) {
+function CategorySelect(props: { categories: Category[]; value: number | null; onChange: (id: number | null) => void; emptyLabel?: string }) {
   return (
     <select value={props.value ?? ""} onChange={(e) => props.onChange(e.target.value ? Number(e.target.value) : null)}>
-      <option value="">Uncategorized</option>
+      <option value="">{props.emptyLabel ?? "Uncategorized"}</option>
       {props.categories.map((c) => (
         <option key={c.id} value={c.id}>{c.path}</option>
       ))}
@@ -63,7 +63,7 @@ function Transactions({ categories }: { categories: Category[] }) {
     <section>
       <div className="toolbar">
         <input placeholder="Search description, merchant, notes" value={q} onChange={(e) => setQ(e.target.value)} />
-        <CategorySelect categories={categories} value={categoryId} onChange={setCategoryId} />
+        <CategorySelect categories={categories} value={categoryId} onChange={setCategoryId} emptyLabel="All categories" />
         <label><input type="checkbox" checked={uncategorized} onChange={(e) => setUncategorized(e.target.checked)} /> Inbox (uncategorized)</label>
         <span className="muted">{data.total.toLocaleString()} transactions</span>
       </div>
