@@ -34,5 +34,34 @@ export const api = {
   importCsv: (form: FormData) => req<{ added: number; skipped: number; categorizedByRules: number }>("/import/csv", { method: "POST", body: form }),
 };
 
+export interface Account {
+  id: number;
+  name: string;
+  type: string;
+  mask: string | null;
+  institution: string | null;
+  plaid_account_id: string | null;
+  current_balance_cents: number | null;
+  transaction_count: number;
+  latest_date: string | null;
+}
+export interface PlaidStatus {
+  configured: boolean;
+  env: string;
+  items: { id: number; institution_name: string | null; status: string; error: string | null; last_synced_at: string | null }[];
+}
+
+const post = <T,>(path: string, body: unknown = {}) =>
+  req<T>(path, { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify(body) });
+
+export const plaidApi = {
+  accounts: () => req<Account[]>("/accounts"),
+  status: () => req<PlaidStatus>("/plaid/status"),
+  linkToken: (itemId?: number) => post<{ link_token: string }>("/plaid/link-token", { itemId }),
+  exchange: (public_token: string) => post<{ institutionName: string | null; sync: { added: number } }>("/plaid/exchange", { public_token }),
+  sync: (itemId?: number) => post<unknown>("/plaid/sync", { itemId }),
+  linkAccount: (id: number, targetAccountId: number) => post<{ merged: number }>(`/accounts/${id}/link`, { targetAccountId }),
+};
+
 export const money = (cents: number) =>
   (cents / 100).toLocaleString("en-US", { style: "currency", currency: "USD" });

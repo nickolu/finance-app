@@ -14,6 +14,8 @@ All transactions live in a local SQLite database exposed through the `finance` M
 - The `Transfers` parent (credit card payments, moves between own accounts) is excluded from spending totals by default so card payments aren't double counted.
 - `merchant` is a cleaned-up name; `raw_description` is exactly what the bank sent. Rules match on either with case-insensitive regex.
 
+- Banks connected through Plaid sync on a schedule. If the user asks about something very recent, call `sync_bank_accounts` first.
+
 ## Answering questions
 
 - "How much did I spend on X in period Y?" → `spending_summary` with `group_by` and dates, or `search_transactions` with a `category` filter and sum.
