@@ -1,0 +1,12 @@
+{
+  "name": "@finance/server",
+  "private": true,
+  "type": "module",
+  "scripts": { "dev": "tsx watch src/index.ts" },
+  "dependencies": {
+    "@finance/db": "workspace:*",
+    "@finance/ingest": "workspace:*",
+    "@hono/node-server": "^1.13.0",
+    "hono": "^4.6.0"
+  }
+}

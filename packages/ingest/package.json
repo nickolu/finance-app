@@ -1,0 +1,11 @@
+{
+  "name": "@finance/ingest",
+  "private": true,
+  "type": "module",
+  "main": "src/index.ts",
+  "dependencies": {
+    "@finance/db": "workspace:*",
+    "papaparse": "^5.4.1"
+  },
+  "devDependencies": { "@types/papaparse": "^5.3.15" }
+}

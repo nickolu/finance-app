@@ -1,0 +1,26 @@
+{
+  "name": "finance-app",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "pnpm -r --parallel dev",
+    "dev:server": "pnpm --filter @finance/server dev",
+    "dev:web": "pnpm --filter @finance/web dev",
+    "import": "tsx packages/ingest/src/cli.ts",
+    "mcp": "tsx packages/mcp/src/index.ts",
+    "test": "vitest run",
+    "typecheck": "for p in packages/db packages/ingest packages/mcp apps/server apps/web; do tsc --noEmit -p $p || exit 1; done"
+  },
+  "devDependencies": {
+    "@types/node": "^22.0.0",
+    "tsx": "^4.19.0",
+    "typescript": "^5.6.0",
+    "vitest": "^2.1.0"
+  },
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "better-sqlite3",
+      "esbuild"
+    ]
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "name": "@finance/mcp",
+  "private": true,
+  "type": "module",
+  "main": "src/index.ts",
+  "dependencies": {
+    "@finance/db": "workspace:*",
+    "@finance/ingest": "workspace:*",
+    "@modelcontextprotocol/sdk": "^1.32.0",
+    "zod": "^3.25.0"
+  }
+}
