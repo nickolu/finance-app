@@ -7,7 +7,7 @@ import {
   listAccounts, listCategories, listTransactions, openDb, resolveCategory, spendingSummary,
   updateTransactions, type TransactionFilter,
 } from "@finance/db";
-import { applyRules } from "@finance/ingest";
+import { applyRules, createPlaidClient, plaidConfigured, syncAll } from "@finance/ingest";
 
 const db = openDb();
 const server = new McpServer({ name: "finance", version: "0.1.0" });
@@ -198,6 +198,15 @@ server.registerTool(
     } finally {
       ro.close();
     }
+  },
+);
+
+server.registerTool(
+  "sync_bank_accounts",
+  { description: "Pull the latest transactions from every bank connected through Plaid. The app also does this on a schedule." },
+  async () => {
+    if (!plaidConfigured()) throw new Error("Plaid is not configured (PLAID_CLIENT_ID / PLAID_SECRET in .env).");
+    return json(await syncAll(db, createPlaidClient()));
   },
 );
 

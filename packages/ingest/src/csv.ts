@@ -1,6 +1,7 @@
 import Papa from "papaparse";
 import { createHash } from "node:crypto";
 import { getOrCreateAccount, type DB } from "@finance/db";
+import { mergeCsvAndPlaid } from "./merge.ts";
 import { applyRules } from "./rules.ts";
 
 export interface ParsedRow {
@@ -188,6 +189,8 @@ export function importCsv(
       importId,
     );
     const { updated } = applyRules(db, { transactionIds: newIds });
+    // Rows Plaid already synced for this account get folded into the CSV rows.
+    mergeCsvAndPlaid(db, accountId);
     return {
       importId,
       accountId,

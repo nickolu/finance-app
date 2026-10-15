@@ -9,6 +9,13 @@ export type DB = Database.Database;
 const here = dirname(fileURLToPath(import.meta.url));
 const repoRoot = resolve(here, "../../..");
 
+// Load .env from the repo root once, for every entry point (server, MCP, CLI).
+try {
+  process.loadEnvFile(resolve(repoRoot, ".env"));
+} catch {
+  // no .env; defaults apply
+}
+
 export function defaultDbPath(): string {
   return resolve(repoRoot, process.env.FINANCE_DB ?? "data/finance.db");
 }
@@ -24,8 +31,22 @@ export function openDb(path = defaultDbPath(), opts: { readonly?: boolean } = {}
   return db;
 }
 
+// Schema changes after the initial schema.sql. Append only; each runs once, tracked by user_version.
+const MIGRATIONS: string[] = [
+  `ALTER TABLE transactions ADD COLUMN plaid_category TEXT;
+   ALTER TABLE plaid_items ADD COLUMN institution_name TEXT;
+   ALTER TABLE plaid_items ADD COLUMN error TEXT;`,
+];
+
 export function migrate(db: DB): void {
   db.exec(readFileSync(resolve(here, "schema.sql"), "utf8"));
+  const version = db.pragma("user_version", { simple: true }) as number;
+  for (let i = version; i < MIGRATIONS.length; i++) {
+    db.transaction(() => {
+      db.exec(MIGRATIONS[i]);
+      db.pragma(`user_version = ${i + 1}`);
+    })();
+  }
   const count = (db.prepare("SELECT COUNT(*) AS n FROM categories").get() as { n: number }).n;
   if (count === 0) seedCategories(db);
 }

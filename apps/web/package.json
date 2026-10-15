@@ -2,10 +2,14 @@
   "name": "@finance/web",
   "private": true,
   "type": "module",
-  "scripts": { "dev": "vite", "build": "vite build" },
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build"
+  },
   "dependencies": {
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
+    "react-plaid-link": "^5.0.0",
     "recharts": "^2.13.0"
   },
   "devDependencies": {

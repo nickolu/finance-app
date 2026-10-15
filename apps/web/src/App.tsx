@@ -1,8 +1,9 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { Bar, BarChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 import { api, money, type Category, type SummaryRow, type Transaction } from "./api.ts";
+import { Accounts } from "./Accounts.tsx";
 
-type Tab = "transactions" | "dashboard" | "import";
+type Tab = "transactions" | "dashboard" | "accounts" | "import";
 
 export function App() {
   const [tab, setTab] = useState<Tab>("transactions");
@@ -14,7 +15,7 @@ export function App() {
       <header>
         <h1>Finance</h1>
         <nav>
-          {(["transactions", "dashboard", "import"] as Tab[]).map((t) => (
+          {(["transactions", "dashboard", "accounts", "import"] as Tab[]).map((t) => (
             <button key={t} className={tab === t ? "active" : ""} onClick={() => setTab(t)}>
               {t[0].toUpperCase() + t.slice(1)}
             </button>
@@ -23,6 +24,7 @@ export function App() {
       </header>
       {tab === "transactions" && <Transactions categories={categories} />}
       {tab === "dashboard" && <Dashboard />}
+      {tab === "accounts" && <Accounts />}
       {tab === "import" && <Import />}
     </div>
   );
